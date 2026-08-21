@@ -9,6 +9,8 @@ export type Topic = {
   name: string;
   explanation: string;
   videos: Video[];
+  syllabusSource?: string;
+  transcriptUsed?: boolean;
 };
 
 export type Unit = {
