@@ -366,91 +366,12 @@ export const SubjectView: React.FC<SubjectViewProps> = ({
                 {/* Section 2: Technical Explanation / Breakdown */}
                 {currentItem.topic.explanation && (
                   <section id="explanation" className="space-y-4">
-                    <h2 id="how-it-works">Core Concepts & Working</h2>
                     <div 
-                      className="explanation-content leading-relaxed"
+                      className="explanation-content leading-relaxed text-sm text-slate-800 dark:text-slate-200 space-y-4"
                       dangerouslySetInnerHTML={{ __html: formatMarkdown(currentItem.topic.explanation) }}
                     />
                   </section>
                 )}
-
-                {/* Section 3: Visual Machine Learning Pipeline Diagram (where applicable) */}
-                <section id="pipeline" className="space-y-3 pt-2">
-                  <h2>System Process Flow</h2>
-                  <div className="bg-[#0F1722] text-slate-200 border border-[#263244] rounded-xl p-4 font-mono text-xs overflow-x-auto leading-relaxed">
-                    <div className="text-slate-400 mb-2"># Technical Pipeline Flow Diagram</div>
-                    <div className="flex items-center gap-2 whitespace-nowrap">
-                      <span className="px-2.5 py-1 bg-[#151D2B] border border-[#263244] rounded text-blue-400 font-bold">Input Data</span>
-                      <span>→</span>
-                      <span className="px-2.5 py-1 bg-[#151D2B] border border-[#263244] rounded text-emerald-400 font-bold">Feature Extraction</span>
-                      <span>→</span>
-                      <span className="px-2.5 py-1 bg-[#151D2B] border border-[#263244] rounded text-amber-400 font-bold">Model Training</span>
-                      <span>→</span>
-                      <span className="px-2.5 py-1 bg-[#151D2B] border border-[#263244] rounded text-purple-400 font-bold">Prediction Output</span>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 4: Comparison Table */}
-                <section id="comparison" className="space-y-3 pt-2">
-                  <h2>Technical Comparison</h2>
-                  <div className="overflow-x-auto">
-                    <table className="tech-table">
-                      <thead>
-                        <tr>
-                          <th>Aspect</th>
-                          <th>Traditional Programming</th>
-                          <th>Machine Learning</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="font-semibold">Input</td>
-                          <td>Data + Hardcoded Rules</td>
-                          <td>Data + Output Labels</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Output</td>
-                          <td>Computed Answers</td>
-                          <td>Learned Model / Rules</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Flexibility</td>
-                          <td>Rigid logic updates</td>
-                          <td>Adapts automatically to new data</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
-
-                {/* Section 5: Real-World Applications */}
-                <section id="applications" className="space-y-3 pt-2">
-                  <h2>Real-World Applications</h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="p-3 bg-slate-50 dark:bg-[#151D2B] border border-slate-200 dark:border-[#263244] rounded-lg space-y-1">
-                      <span className="font-bold text-slate-900 dark:text-white">🏥 Healthcare & Diagnostics</span>
-                      <p className="text-slate-600 dark:text-slate-400">Automated medical imaging analysis and disease prediction models.</p>
-                    </div>
-                    <div className="p-3 bg-slate-50 dark:bg-[#151D2B] border border-slate-200 dark:border-[#263244] rounded-lg space-y-1">
-                      <span className="font-bold text-slate-900 dark:text-white">💰 Finance & Fraud Detection</span>
-                      <p className="text-slate-600 dark:text-slate-400">Real-time credit card fraud detection and algorithmic trading systems.</p>
-                    </div>
-                  </div>
-                </section>
-
-                {/* Section 6: Key Takeaways */}
-                <section id="takeaways" className="space-y-3 pt-2">
-                  <h2>Key Takeaways</h2>
-                  <div className="callout callout-tip">
-                    <ul className="space-y-1.5 m-0 text-xs">
-                      <li>• Understand the exact mathematical and algorithmic definition for university exams.</li>
-                      <li>• Identify trade-offs between computational complexity and prediction accuracy.</li>
-                      <li>• Review practical code implementation and library equivalents in Python/C++.</li>
-                    </ul>
-                  </div>
-                </section>
-
               </div>
 
               {/* Bottom Previous / Next Topic Controls */}
@@ -591,8 +512,34 @@ function getYouTubeId(url: string): string {
 // Helper to convert simple Markdown text to HTML safely for topic explanations
 function formatMarkdown(text: string): string {
   if (!text) return '';
-  let html = text
-    .replace(/```([\s\S]*?)```/g, '<pre class="bg-[#0F1722] text-slate-100 font-mono text-xs p-4 rounded-xl overflow-x-auto my-3 border border-[#263244]"><code>$1</code></pre>')
+
+  let processed = text;
+
+  // 1. Code blocks
+  processed = processed.replace(/```([\s\S]*?)```/g, '<pre class="bg-[#0F1722] text-slate-100 font-mono text-xs p-4 rounded-xl overflow-x-auto my-3 border border-[#263244]"><code>$1</code></pre>');
+
+  // 2. Blockquotes (> In short ...)
+  processed = processed.replace(/^>\s*(.*$)/gim, '<blockquote class="p-3.5 my-3 bg-blue-50/80 dark:bg-blue-950/40 border-l-4 border-blue-600 text-slate-800 dark:text-slate-200 rounded-r-lg font-medium text-xs sm:text-sm leading-relaxed">$1</blockquote>');
+
+  // 3. GFM Markdown Tables
+  processed = processed.replace(/((?:\|[^\n]+\|\n)+)/g, (match) => {
+    const lines = match.trim().split('\n').filter(l => l.trim().startsWith('|'));
+    if (lines.length < 2) return match;
+
+    const headers = lines[0].split('|').slice(1, -1).map(h => h.trim());
+    const rows = lines.slice(2).map(r => r.split('|').slice(1, -1).map(c => c.trim()));
+
+    const ths = headers.map(h => `<th class="p-2.5 bg-slate-100 dark:bg-[#151D2B] font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-[#263244]">${h}</th>`).join('');
+    const trs = rows.map(r => {
+      const tds = r.map(c => `<td class="p-2.5 border-b border-slate-100 dark:border-[#263244]/60 text-slate-700 dark:text-slate-300">${c}</td>`).join('');
+      return `<tr class="hover:bg-slate-50/50 dark:hover:bg-[#151D2B]/40 transition-colors">${tds}</tr>`;
+    }).join('');
+
+    return `<div class="overflow-x-auto my-4"><table class="w-full text-xs text-left border-collapse border border-slate-200 dark:border-[#263244] rounded-lg overflow-hidden"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table></div>`;
+  });
+
+  // 4. Inline code, headers, list items
+  processed = processed
     .replace(/`([^`]+)`/g, '<code class="bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-mono text-xs px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">$1</code>')
     .replace(/^### (.*$)/gim, '<h3 class="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2">$1</h3>')
     .replace(/^## (.*$)/gim, '<h2 class="text-lg font-extrabold text-slate-900 dark:text-white mt-5 mb-2">$1</h2>')
@@ -601,7 +548,8 @@ function formatMarkdown(text: string): string {
     .replace(/\*(.*?)\*/g, '<em class="italic text-slate-700 dark:text-slate-300">$1</em>')
     .replace(/^\- (.*$)/gim, '<li class="ml-4 list-disc text-slate-700 dark:text-slate-300 my-1">$1</li>')
     .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc text-slate-700 dark:text-slate-300 my-1">$1</li>')
+    .replace(/^(\d+)\.\s+(.*$)/gim, '<li class="ml-4 list-decimal text-slate-700 dark:text-slate-300 my-1">$2</li>')
     .replace(/\n\n/g, '</p><p class="my-2 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">');
 
-  return `<p class="my-2 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">${html}</p>`;
+  return `<p class="my-2 text-slate-700 dark:text-slate-300 text-sm leading-relaxed">${processed}</p>`;
 }
