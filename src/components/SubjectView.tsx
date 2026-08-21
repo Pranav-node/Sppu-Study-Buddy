@@ -2,9 +2,10 @@ import React, { useState, useMemo } from 'react';
 import type { Course, Topic, Unit } from '../types/syllabus';
 import { 
   ChevronDown, ChevronRight, ChevronLeft, Play, Clock, 
-  CheckCircle, Circle, Sparkles, ExternalLink, Lightbulb, 
-  BookOpen, Info, Check, Heart, DollarSign, ShoppingCart, Truck, Shield
+  CheckCircle, Circle, ExternalLink, Lightbulb, 
+  Info, Heart, DollarSign, ShoppingCart, Truck
 } from 'lucide-react';
+
 
 interface SubjectViewProps {
   course: Course;
@@ -96,10 +97,7 @@ export const SubjectView: React.FC<SubjectViewProps> = ({
     ? Math.round((completedTopicsInCourseCount / totalTopicsInCourse) * 100) 
     : 0;
 
-  // Active unit topics statistics
-  const activeUnit = course.units.find(u => u.id === activeUnitId) || course.units[0];
-  const activeUnitCompletedCount = activeUnit ? activeUnit.topics.filter(t => completedTopics[t.id]).length : 0;
-  const activeUnitTotal = activeUnit ? activeUnit.topics.length : 0;
+
 
   return (
     <div className="max-w-[1700px] mx-auto px-3 sm:px-6 py-6 space-y-6">

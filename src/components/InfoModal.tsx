@@ -1,5 +1,5 @@
-import React from 'react';
-import { X, BookOpen, CheckCircle, Info, GraduationCap, ExternalLink } from 'lucide-react';
+import { X, BookOpen, CheckCircle, Info, GraduationCap } from 'lucide-react';
+
 
 interface InfoModalProps {
   isOpen: boolean;
