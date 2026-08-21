@@ -3,64 +3,264 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  :root {
+    --bg-light: #F8FAFC;
+    --surface-light: #FFFFFF;
+    --surface-secondary-light: #F1F5F9;
+    --text-primary-light: #0F172A;
+    --text-secondary-light: #64748B;
+    --border-light: #E2E8F0;
+    --accent-light: #2563EB;
+    --accent-hover-light: #1D4ED8;
+    --success: #16A34A;
+    --warning: #D97706;
+    --danger: #DC2626;
+    --youtube: #FF0033;
+  }
+
+  .dark {
+    --bg-dark: #090D14;
+    --surface-dark: #0F1722;
+    --surface-secondary-dark: #151D2B;
+    --text-primary-dark: #F8FAFC;
+    --text-secondary-dark: #94A3B8;
+    --border-dark: #263244;
+    --accent-dark: #60A5FA;
+  }
+
   body {
-    @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased min-h-screen selection:bg-blue-100 selection:text-blue-900;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #F8FAFC;
+    color: #0F172A;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .dark body,
+  body.dark {
+    background-color: #090D14;
+    color: #F8FAFC;
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Minimal technical style */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #CBD5E1;
   border-radius: 3px;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: #263244;
+}
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94A3B8;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3B4B63;
 }
 
-/* Prosaic explanation typography styling */
-.explanation-content h3 {
-  font-size: 1.125rem;
+/* Technical Documentation Article Typography */
+.article-content {
+  font-size: 1.03rem;
+  line-height: 1.8;
+  color: #334155;
+}
+
+.dark .article-content {
+  color: #CBD5E1;
+}
+
+.article-content h1 {
+  font-size: 2.125rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0F172A;
+  margin-top: 1.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.25;
+}
+
+.dark .article-content h1 {
+  color: #F8FAFC;
+}
+
+.article-content h2 {
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.01em;
-}
-
-.explanation-content p {
-  line-height: 1.65;
-  margin-bottom: 0.85rem;
-  font-size: 0.95rem;
-}
-
-.explanation-content ul, .explanation-content ol {
-  margin-left: 1.25rem;
-  margin-bottom: 0.85rem;
-}
-
-.explanation-content li {
-  margin-bottom: 0.4rem;
-  line-height: 1.6;
-  font-size: 0.95rem;
-}
-
-.explanation-content blockquote {
-  border-left: 3px solid #3b82f6;
-  padding: 0.75rem 1rem;
-  border-radius: 0 0.375rem 0.375rem 0;
-  margin-top: 1rem;
+  letter-spacing: -0.02em;
+  color: #0F172A;
+  margin-top: 2rem;
   margin-bottom: 1rem;
-  font-size: 0.925rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #E2E8F0;
+  line-height: 1.35;
 }
 
-.explanation-content hr {
-  border: 0;
-  border-top: 1px solid #334155;
-  margin: 1.25rem 0;
+.dark .article-content h2 {
+  color: #F8FAFC;
+  border-bottom-color: #263244;
+}
+
+.article-content h3 {
+  font-size: 1.225rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: #0F172A;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.dark .article-content h3 {
+  color: #F8FAFC;
+}
+
+.article-content p {
+  margin-bottom: 1.25rem;
+  color: #334155;
+  leading: relaxed;
+}
+
+.dark .article-content p {
+  color: #CBD5E1;
+}
+
+.article-content ul, .article-content ol {
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.article-content li {
+  margin-bottom: 0.5rem;
+  color: #334155;
+}
+
+.dark .article-content li {
+  color: #CBD5E1;
+}
+
+/* Documentation Callout Boxes */
+.callout {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.5rem;
+  border-left-width: 4px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.callout-info {
+  background-color: #F0F9FF;
+  border-left-color: #0284C7;
+  color: #0C4A6E;
+}
+.dark .callout-info {
+  background-color: #0C2A4A;
+  border-left-color: #38BDF8;
+  color: #E0F2FE;
+}
+
+.callout-tip {
+  background-color: #F0FDF4;
+  border-left-color: #16A34A;
+  color: #14532D;
+}
+.dark .callout-tip {
+  background-color: #092E1B;
+  border-left-color: #4ADE80;
+  color: #DCFCE7;
+}
+
+.callout-warning {
+  background-color: #FFFBEB;
+  border-left-color: #D97706;
+  color: #78350F;
+}
+.dark .callout-warning {
+  background-color: #331F0A;
+  border-left-color: #FBBF24;
+  color: #FEF3C7;
+}
+
+.callout-important {
+  background-color: #FEF2F2;
+  border-left-color: #DC2626;
+  color: #7F1D1D;
+}
+.dark .callout-important {
+  background-color: #3B1111;
+  border-left-color: #F87171;
+  color: #FEE2E2;
+}
+
+/* Code Block Styling */
+pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+}
+
+/* Technical Table Styling */
+.tech-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid #E2E8F0;
+}
+
+.dark .tech-table {
+  border-color: #263244;
+}
+
+.tech-table th {
+  background-color: #F1F5F9;
+  color: #0F172A;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.dark .tech-table th {
+  background-color: #151D2B;
+  color: #F8FAFC;
+  border-bottom-color: #263244;
+}
+
+.tech-table td {
+  padding: 0.85rem 1rem;
+  font-size: 0.925rem;
+  border-bottom: 1px solid #F1F5F9;
+  color: #334155;
+}
+
+.dark .tech-table td {
+  border-bottom-color: #151D2B;
+  color: #CBD5E1;
+}
+
+.tech-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tech-table tr:hover td {
+  background-color: #F8FAFC;
+}
+
+.dark .tech-table tr:hover td {
+  background-color: #0F1722;
 }

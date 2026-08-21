@@ -30,7 +30,6 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
 
   semesters.forEach(sem => {
     sem.courses.forEach(course => {
-      // Check if course matches
       const courseMatch = course.name.toLowerCase().includes(q) || course.code.toLowerCase().includes(q);
 
       course.units.forEach(unit => {
@@ -56,16 +55,16 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6 transition-colors">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs flex items-center justify-between">
+      <div className="bg-white dark:bg-[#0F1722] rounded-xl border border-slate-200 dark:border-[#263244] p-5 shadow-xs flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
-            <Search className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+            <Search className="w-4 h-4" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-lg font-bold text-slate-900 dark:text-white">
               Search Results for "{query}"
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Found {results.length} matching syllabus items across all courses
             </p>
           </div>
@@ -73,11 +72,11 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
       </div>
 
       {results.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-12 text-center space-y-4">
+        <div className="bg-white dark:bg-[#0F1722] rounded-xl border border-slate-200 dark:border-[#263244] p-12 text-center space-y-4">
           <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
             <Search className="w-6 h-6" />
           </div>
-          <h2 className="text-lg font-bold text-slate-700 dark:text-slate-300">No matching syllabus topics found</h2>
+          <h2 className="text-base font-bold text-slate-700 dark:text-slate-300">No matching syllabus topics found</h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
             Try searching for keywords like "K-Means", "CNN", "PageRank", "Quantum", "Regression", or course codes like "417521".
           </p>
@@ -87,9 +86,9 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
           {results.map((res, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-xs transition-all"
+              className="bg-white dark:bg-[#0F1722] rounded-xl border border-slate-200 dark:border-[#263244] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors"
             >
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex items-center gap-2 text-xs">
                   <span className="font-mono bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
                     {res.courseCode}
@@ -120,21 +119,21 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => onSelectTopic(res.topic!, res.unitName, res.courseName, res.courseCode)}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
                     <BookOpen className="w-3.5 h-3.5" />
-                    <span>Learn Topic</span>
+                    <span>Open Topic</span>
                   </button>
 
-                  {res.topic.videos[0] && (
+                  {res.topic.videos && res.topic.videos[0] && (
                     <a
                       href={res.topic.videos[0].url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-2 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-xs font-bold rounded-lg transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF0033]/10 hover:bg-[#FF0033]/20 text-[#FF0033] dark:text-[#FF3355] border border-[#FF0033]/30 text-xs font-semibold rounded-lg transition-colors"
                     >
-                      <Play className="w-3.5 h-3.5 fill-rose-600 stroke-none" />
-                      <span>YouTube ▶</span>
+                      <Play className="w-3.5 h-3.5 fill-current stroke-none" />
+                      <span>YouTube</span>
                     </a>
                   )}
                 </div>

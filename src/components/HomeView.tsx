@@ -1,12 +1,19 @@
 import React from 'react';
 import type { Semester } from '../types/syllabus';
-import { Sparkles, CheckCircle2, Award, ArrowRight, Layers, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle, Sparkles } from 'lucide-react';
 
 interface HomeViewProps {
   semesters: Semester[];
   completedTopics: Record<string, boolean>;
   onSelectSem: (semId: string) => void;
   onSelectCourse: (courseCode: string) => void;
+}
+
+interface LastStudiedTopic {
+  courseCode: string;
+  courseName: string;
+  unitName: string;
+  topicName: string;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -21,6 +28,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   // Calculate total topic completion count
   let totalTopics = 0;
   let completedCount = 0;
+  let lastStudiedTopic: LastStudiedTopic | null = null;
 
   semesters.forEach(sem => {
     sem.courses.forEach(course => {
@@ -29,6 +37,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
           totalTopics++;
           if (completedTopics[topic.id]) {
             completedCount++;
+            lastStudiedTopic = {
+              courseCode: course.code,
+              courseName: course.name,
+              unitName: unit.name,
+              topicName: topic.name
+            };
           }
         });
       });
@@ -38,216 +52,214 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const totalProgressPercent = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12 transition-colors">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10 transition-colors">
       
-      {/* Hero Section */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-semibold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5" />
-          Single Source of Truth — Official SPPU Syllabus
+      {/* Header Banner */}
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Savitribai Phule Pune University • 2020 Course</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            SPPU B.E. AI&DS Study Hub
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl">
+            Official Fourth Year Artificial Intelligence & Data Science syllabus, topic-by-topic interactive study checklist, and technical documentation notes.
+          </p>
         </div>
-        
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-          SPPU AI&DS Study Hub
-        </h1>
-        
-        <p className="text-lg sm:text-xl font-semibold text-blue-600 dark:text-blue-400">
-          Fourth Year — 2020 Course
-        </p>
-        
-        <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-          Explore the complete SPPU Artificial Intelligence and Data Science syllabus topic-by-topic. An interactive roadmap with student-level explanations, interactive checklists, and curated YouTube videos.
-        </p>
 
-        {/* Global Progress Bar Banner */}
-        <div className="max-w-md mx-auto pt-2">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs space-y-2">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <CheckCircle className="w-4 h-4 text-emerald-500" />
-                Overall Syllabus Progress
-              </span>
-              <span className="text-blue-600 dark:text-blue-400 font-mono">
-                {completedCount} / {totalTopics} Topics ({totalProgressPercent}%)
-              </span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500 rounded-full transition-all duration-500"
-                style={{ width: `${totalProgressPercent}%` }}
-              />
-            </div>
+        {/* Global Progress Bar */}
+        <div className="bg-white dark:bg-[#0F1722] border border-slate-200 dark:border-[#263244] rounded-xl p-3.5 min-w-[280px] shadow-xs">
+          <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
+            <span className="text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+              Syllabus Completion
+            </span>
+            <span className="text-blue-600 dark:text-blue-400 font-mono">
+              {completedCount} / {totalTopics} ({totalProgressPercent}%)
+            </span>
+          </div>
+          <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-blue-600 dark:bg-blue-500 rounded-full transition-all duration-300"
+              style={{ width: `${totalProgressPercent}%` }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Two Large Semester Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        {/* SEMESTER VII CARD */}
-        {sem7 && (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between group">
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-lg bg-blue-600 text-white font-bold text-xs uppercase tracking-wider">
-                  Semester VII
-                </span>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
-                  10 Courses • 60 Units
-                </span>
-              </div>
+      {/* Continue Learning Section if any topic completed */}
+      {lastStudiedTopic && (
+        <div className="bg-blue-50/60 dark:bg-[#0F1722] border border-blue-200 dark:border-[#263244] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div className="space-y-0.5">
+            <span className="font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider text-[10px]">
+              Continue Learning
+            </span>
+            <p className="font-semibold text-slate-900 dark:text-white text-sm">
+              {(lastStudiedTopic as LastStudiedTopic).courseCode} {(lastStudiedTopic as LastStudiedTopic).courseName}
+            </p>
+            <p className="text-slate-600 dark:text-slate-400">
+              {(lastStudiedTopic as LastStudiedTopic).unitName} • {(lastStudiedTopic as LastStudiedTopic).topicName}
+            </p>
+          </div>
+          <button
+            onClick={() => onSelectCourse((lastStudiedTopic as LastStudiedTopic).courseCode)}
+            className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center gap-1.5 transition-colors shrink-0"
+          >
+            <span>Open Course</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  SEMESTER VII
-                </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  Machine Learning, Data Modeling & Visualization, Quantum AI, Information Retrieval, and Electives.
-                </p>
-              </div>
+      {/* SEMESTER VII SECTION */}
+      {sem7 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                SEMESTER VII CURRICULUM
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Fourth Year • Artificial Intelligence & Data Science
+              </p>
+            </div>
+            <button
+              onClick={() => onSelectSem('sem7')}
+              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            >
+              <span>View All 10 Courses</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
 
-              <div className="space-y-3 pt-2">
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Included Theory Courses
-                </div>
+          {/* Clean Subject List/Table Hybrid */}
+          <div className="bg-white dark:bg-[#0F1722] border border-slate-200 dark:border-[#263244] rounded-xl overflow-hidden shadow-xs divide-y divide-slate-100 dark:divide-[#263244]">
+            {sem7.courses.map(course => {
+              const courseTopicsCount = course.units.reduce((acc, u) => acc + u.topics.length, 0);
+              const courseCompletedCount = course.units.reduce((acc, u) => acc + u.topics.filter(t => completedTopics[t.id]).length, 0);
+              const isCompulsory = course.type === 'compulsory';
+              const totalHours = course.units.reduce((acc, u) => acc + (typeof u.hours === 'number' ? u.hours : parseInt(String(u.hours || 0), 10)), 0) || 36;
 
-                <div className="space-y-2">
-                  {sem7.courses.map(course => (
-                    <div 
-                      key={course.code}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectCourse(course.code);
-                      }}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 hover:border-blue-300 dark:hover:border-blue-700 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 cursor-pointer transition-all text-xs font-medium text-slate-800 dark:text-slate-200"
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
-                        <span className="truncate">{course.name}</span>
+              return (
+                <div 
+                  key={course.code}
+                  onClick={() => onSelectCourse(course.code)}
+                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-[#151D2B] cursor-pointer transition-colors group"
+                >
+                  <div className="flex items-start gap-3.5">
+                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xs font-bold text-slate-700 dark:text-slate-300 rounded shrink-0">
+                      {course.code}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {course.name}
+                        </h3>
+                        {!isCompulsory && (
+                          <span className="text-[10px] px-1.5 py-0.2 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded">
+                            {course.electiveGroup}
+                          </span>
+                        )}
                       </div>
-                      <span className="font-mono text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300 shrink-0 ml-2">
-                        {course.code}
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                        {course.units.length} Units • {totalHours} Allotted Hours
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
+                    <div className="text-right text-xs">
+                      <span className="font-mono text-slate-700 dark:text-slate-300 font-medium">
+                        {courseCompletedCount}/{courseTopicsCount} Topics
                       </span>
                     </div>
-                  ))}
+                    <div className="text-blue-600 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform">
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="p-6 bg-slate-50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800">
-              <button
-                onClick={() => onSelectSem('sem7')}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-colors shadow-xs"
-              >
-                <span>Explore Semester VII Courses</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+              );
+            })}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* SEMESTER VIII CARD */}
-        {sem8 && (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between group">
-            <div className="p-6 sm:p-8 space-y-6">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-lg bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider">
-                  Semester VIII
-                </span>
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
-                  10 Courses • 60 Units
-                </span>
-              </div>
+      {/* SEMESTER VIII SECTION */}
+      {sem8 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-wider text-xs flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                SEMESTER VIII CURRICULUM
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Fourth Year • Artificial Intelligence & Data Science
+              </p>
+            </div>
+            <button
+              onClick={() => onSelectSem('sem8')}
+              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+            >
+              <span>View All 10 Courses</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
 
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                  SEMESTER VIII
-                </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  Computational Intelligence, Distributed Computing, VR & Game Dev, Deep Learning, and Electives.
-                </p>
-              </div>
+          {/* Clean Subject List/Table Hybrid */}
+          <div className="bg-white dark:bg-[#0F1722] border border-slate-200 dark:border-[#263244] rounded-xl overflow-hidden shadow-xs divide-y divide-slate-100 dark:divide-[#263244]">
+            {sem8.courses.map(course => {
+              const courseTopicsCount = course.units.reduce((acc, u) => acc + u.topics.length, 0);
+              const courseCompletedCount = course.units.reduce((acc, u) => acc + u.topics.filter(t => completedTopics[t.id]).length, 0);
+              const isCompulsory = course.type === 'compulsory';
+              const totalHours = course.units.reduce((acc, u) => acc + (typeof u.hours === 'number' ? u.hours : parseInt(String(u.hours || 0), 10)), 0) || 36;
 
-              <div className="space-y-3 pt-2">
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Included Theory Courses
-                </div>
-
-                <div className="space-y-2">
-                  {sem8.courses.map(course => (
-                    <div 
-                      key={course.code}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectCourse(course.code);
-                      }}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/40 cursor-pointer transition-all text-xs font-medium text-slate-800 dark:text-slate-200"
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0"></span>
-                        <span className="truncate">{course.name}</span>
+              return (
+                <div 
+                  key={course.code}
+                  onClick={() => onSelectCourse(course.code)}
+                  className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-[#151D2B] cursor-pointer transition-colors group"
+                >
+                  <div className="flex items-start gap-3.5">
+                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-xs font-bold text-slate-700 dark:text-slate-300 rounded shrink-0">
+                      {course.code}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {course.name}
+                        </h3>
+                        {!isCompulsory && (
+                          <span className="text-[10px] px-1.5 py-0.2 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded">
+                            {course.electiveGroup}
+                          </span>
+                        )}
                       </div>
-                      <span className="font-mono text-[10px] bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-700 dark:text-slate-300 shrink-0 ml-2">
-                        {course.code}
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
+                        {course.units.length} Units • {totalHours} Allotted Hours
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0">
+                    <div className="text-right text-xs">
+                      <span className="font-mono text-slate-700 dark:text-slate-300 font-medium">
+                        {courseCompletedCount}/{courseTopicsCount} Topics
                       </span>
                     </div>
-                  ))}
+                    <div className="text-blue-600 dark:text-blue-400 group-hover:translate-x-0.5 transition-transform">
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="p-6 bg-slate-50 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800">
-              <button
-                onClick={() => onSelectSem('sem8')}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-colors shadow-xs"
-              >
-                <span>Explore Semester VIII Courses</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-      </div>
-
-      {/* Feature Highlights Banner */}
-      <div className="bg-slate-900 dark:bg-slate-950 border border-slate-800 text-white rounded-2xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 shadow-md">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="font-bold text-base text-white">Interactive Checklist</h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Track topic completion progress across all subjects with persisted study status.
-            </p>
+              );
+            })}
           </div>
         </div>
-
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-            <Layers className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="font-bold text-base text-white">60 Units Roadmap</h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Complete unit-by-unit expandable structure for compulsory subjects and Electives III–VI.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-            <Award className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="font-bold text-base text-white">Explanations & Videos</h3>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Student-level topic explanations accompanied by direct recommended YouTube video learning links.
-            </p>
-          </div>
-        </div>
-      </div>
+      )}
 
     </div>
   );
